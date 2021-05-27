@@ -19,7 +19,6 @@ namespace yaml2dat
         [Option('p', "YamlPath", Required = true, HelpText = "Path to the yaml files")]
         public string YamlPath { get; set; }
 
-
         [Option('o', "OutputFile", Required = true, HelpText = "Path to the output file")]
         public string OutputFile { get; set; }
     }
@@ -50,7 +49,7 @@ namespace yaml2dat
             }
 
             CreateDatFile(path, options.OutputFile);
-            
+
             stopwatch.Stop();
             log.Add($"Elapsed time: {stopwatch.ElapsedMilliseconds / 1000} seconds");
 
@@ -86,6 +85,12 @@ namespace yaml2dat
 
         private static void AddItem(IItemData item, ItemsData itemsData)
         {
+            if (itemsData.Definitions.ContainsKey(item.Id))
+            {
+                log.Add($"Skipping yaml for path {item.Path} as the itemId already has been added");
+                return;
+            }
+
             itemsData.Definitions.Add(item.Id, new ItemRecord
             {
                 ID = item.Id,
